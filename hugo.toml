@@ -1,0 +1,34 @@
+baseURL = 'https://example.org/'
+locale = 'en-us'
+title = 'Connor Charles'
+theme = 'paper'
+
+# needed to  render raw HTML (e.g. <sub>, <sup>, <kbd>, <mark>)
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+#  [markup.highlight]
+#    lineNos = true
+
+
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 10
+  [[menu.main]]
+    identifier = "contact"
+    name = "Contact"
+    url = "/contact/"
+    weight = 10
+
+[params]
+  name = 'Connor Charles'
+  color = 'linen'
+  github = 'ccharlesgb'
+  linkedin = 'connor-charles-1a7956123'
+  avatar = 'ccharles.gb@gmail.com'
+  bio = 'Technical Lead & Data Engineer'
+# ------------------------------
