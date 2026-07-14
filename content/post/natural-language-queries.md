@@ -6,11 +6,11 @@ tags = ["ai", "data"]
 mermaid = true
 +++
 
-Recently my team at Autotrader did a hack on ways to improve the experience of the data platform for our colleagues. The aim of this hack wasn't necessarily to produce production ready software, but to give the team exposure to AI based workflows and Semantic Layers.One of the biggest pain points we have is that we have a **lot** of data, dashboards and reports and it can be hard to find the right one. Especially in meetings where sometimes someone will ask "How many X did we have last week?" and then someone might have to step back from the conversation and find the right dashboard, in which case the meeting has probably already moved on.
+Recently, my team at Autotrader ran a hack on ways to improve the experience of the data platform for our colleagues. The aim of this hack wasn't necessarily to produce production-ready software, but to give the team exposure to AI-based workflows and semantic layers. One of the biggest pain points we have is that we have a **lot** of data, dashboards and reports and it can be hard to find the right one. Especially in meetings where sometimes someone will ask "How many X did we have last week?" and then someone might have to step back from the conversation and find the right dashboard by which point the meeting has already moved on.
 
-## Building and Querying Semantic Model
+## Building and querying a semantic model
 
-There are lots of Semantic Layer vendors available but we wanted something lightweight that could be easily integrated with a Python web app for the purposes of the hack. We ended up with a ORM like approach similar to [sqlalchemy declarative](https://docs.sqlalchemy.org/en/13/orm/extensions/declarative/basic_use.html). 
+There are lots of semantic layer vendors available but we wanted something lightweight that could be easily integrated with a Python web app for the purposes of the hack. We ended up with a ORM like approach similar to [sqlalchemy declarative](https://docs.sqlalchemy.org/en/13/orm/extensions/declarative/basic_use.html). 
 
 A semantic model looks a bit like this:
 
@@ -26,11 +26,11 @@ class Penguins(Model):
     average_bill_length_mm: Measure = bill_length_mm.measure(lambda d: d.mean())
 ```
 
-Where dimensions are categorical fields and measures are aggregations. 
-The model also supported simple join relationships.
+Here, dimensions are categorical fields and measures are aggregations. 
+The model also supports simple join relationships.
 
-The Semantic model could then be queried using a simple query builder which we can later expose as a tool 
-call for the LLM. For example if you wanted to know the number of penguins by species you could do:
+The semantic model could then be queried using a simple query builder which we can later expose as a tool 
+call for the LLM. For example if you wanted to know the number of penguins by species you can do:
 
 ```python
     sl.query_model(
@@ -59,20 +59,19 @@ flowchart LR
     B -->|Return Results| A
 ```
 
-The Semantic Layer would template into the tool's schema the permitted models,
-measures and dimensions so the LLM would not be able to hallucinate dimensions and measures that should be there. We would also give 
-feedback to the LLM if the query was invalid and so it could try again.
+The semantic layer templates into the tool's schema the permitted models,
+measures and dimensions so the LLM isn't able to hallucinate dimensions and measures that do not exist. We also give feedback to the LLM if the query was invalid so it can try again.
 
-## Building an Interface
+## Building an interface
 
 We only had 3 days for the hack so had to get something demonstrable up and running fast! We ended up with a Streamlit app that would expose a simple chat interface to the LLM. The interface would output a representation of the query so you could verify it had done 
 the right thing and then the results of the query as a table:
 
 ![A natural language query and it's resulting semantic query](/images/chatbot.png)
 
-## What's Next?
+## What's next?
 
-From this hack we learned that LLMs can quite easily be hooked up to a semantic layer to allow natural language queries 
+From this hack we learned that LLMs can easily be hooked up to a semantic layer to allow natural language queries 
 of data in our data platform. The positives of this approach is that the LLM is constrained by the semantic model 
 and so is more likely to generate the correct query than if it was just given the schema of our 
-data. Cube [offers this feature](https://docs.cube.dev/docs/explore-analyze/analytics-chat?_gl=1*1gyj65h*_gcl_au*NjIyMjk3NTY4LjE3ODIxNTQ1OTc.#how-it-works) in its Semantic Layer offering already as well and the [open semantic interchange](https://open-semantic-interchange.org/) has been designed around giving AI context about the semantic model from the start.
+data. Cube [offers this feature](https://docs.cube.dev/docs/explore-analyze/analytics-chat?_gl=1*1gyj65h*_gcl_au*NjIyMjk3NTY4LjE3ODIxNTQ1OTc.#how-it-works) in its Semantic Layer offering already as well and the [open semantic interchange](https://open-semantic-interchange.org/) has been designed around giving AI context about the semantic model from the start. We're keen to start integrating agentic analytics on top of our data platform so questions can be answered quickly and accurately without having to open up BigQuery or Looker.
