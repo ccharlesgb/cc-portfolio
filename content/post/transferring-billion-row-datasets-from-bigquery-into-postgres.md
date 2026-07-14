@@ -85,11 +85,24 @@ The downside of this is that if something were to happen to the database whilst 
 
 Once all the data was in the staging table, we then performed the necessary DDL to swap in the new data into the live table. This ended up looking very similar to dbt's [insert_overwrite](https://docs.getdbt.com/docs/build/incremental-strategy?version=2.0&name=Fusion#insert_overwrite) strategy, where the new data is inserted as a partition which is attached to the main table. This ensured a zero-downtime swap of the new dataset, so our customer's experience was not impacted.
 
-Once all the data was in the staging table, we then performed the necessary DDL to swap in the new data into the live table. This ended up looking very similar to dbt's [insert_overwrite](https://docs.getdbt.com/docs/build/incremental-strategy?version=2.0&name=Fusion#insert_overwrite) strategy, where the new data is inserted as a partition which is attached to the main table. This ensured a zero-downtime swap of the new dataset, so our customer's experience was not impacted.
+```mermaid
+flowchart LR
+    StagingTable[Staging Table] --> NewPartition[New Partition]
+    NewPartition --> LiveTable[Live Table]
+```
+
+The new partition is first analysed and then the constraints and indexes are built on it. This ensures when we attach the partition to the live table it is ready to be queried with low latency.
 
 # Orchestration
 
 The final component of this new platform capability was scheduling. We use [Airflow](https://airflow.apache.org/) to schedule our batch jobs, and so we needed a way to trigger the data transfer job after the new dataset was ready to be ingested. We already had a platform capability to schedule [Kubernetes jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/) from a delivery platform API; therefore, hooking it up to Airflow was just a matter of creating a new operator that would call the delivery platform API to schedule the job. The operator would then poll the job status until it was complete or failed. Airflow could then retry the job if it failed because we had designed the data transfer job to be idempotent.
+
+```mermaid
+flowchart LR
+    AirflowOperator[Airflow Operator] -- REST Endpoint --> DeliveryPlatformAPI[Delivery Platform API]
+    DeliveryPlatformAPI -- Schedules --> K8sJob[Kubernetes Job]
+```
+
 
 # Was it worth it?
 
