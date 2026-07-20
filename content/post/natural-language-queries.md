@@ -67,7 +67,7 @@ measures and dimensions so the LLM isn't able to hallucinate dimensions and meas
 We only had 3 days for the hack so had to get something demonstrable up and running fast! We ended up with a Streamlit app that would expose a simple chat interface to the LLM. The interface would output a representation of the query so you could verify it had done 
 the right thing and then the results of the query as a table:
 
-![A natural language query and it's resulting semantic query](/images/chatbot.png)
+![A natural language query and it's resulting semantic query](/images/natural-language-queries/chatbot.png)
 
 ## What's next?
 
