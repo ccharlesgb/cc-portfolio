@@ -2,6 +2,7 @@ baseURL = 'https://example.org/'
 locale = 'en-us'
 title = 'Connor Charles'
 theme = 'paper'
+canonifyURLs = true
 
 # needed to  render raw HTML (e.g. <sub>, <sup>, <kbd>, <mark>)
 [markup]
